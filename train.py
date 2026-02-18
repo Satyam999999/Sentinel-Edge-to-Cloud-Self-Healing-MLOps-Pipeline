@@ -2,11 +2,15 @@ import mlflow
 import mlflow.pyfunc
 from logger import get_logger
 from datetime import datetime
-import os
 
 logger = get_logger("Training")
 
 MODEL_NAME = "Sentinel-Anomaly-Model"
+
+
+class DummyModel(mlflow.pyfunc.PythonModel):
+    def predict(self, context, model_input):
+        return ["mock_prediction"] * len(model_input)
 
 
 def train():
@@ -15,30 +19,25 @@ def train():
     with mlflow.start_run() as run:
 
         # ------------------------
-        # Mock Training Metrics
+        # Mock Metrics
         # ------------------------
-        mock_map = 0.82
-        mock_precision = 0.79
-
         mlflow.log_param("epochs", 5)
-        mlflow.log_metric("mAP", mock_map)
-        mlflow.log_metric("precision", mock_precision)
+        mlflow.log_metric("mAP", 0.82)
+        mlflow.log_metric("precision", 0.79)
 
         # ------------------------
-        # Save Dummy Model Artifact
+        # Log Proper MLflow Model
         # ------------------------
-        model_path = "model.txt"
+        mlflow.pyfunc.log_model(
+            artifact_path="model",
+            python_model=DummyModel()
+        )
 
-        with open(model_path, "w") as f:
-            f.write(f"Mock Sentinel model - {datetime.utcnow()}")
-
-        mlflow.log_artifact(model_path)
+        model_uri = f"runs:/{run.info.run_id}/model"
 
         # ------------------------
         # Register Model
         # ------------------------
-        model_uri = f"runs:/{run.info.run_id}/{model_path}"
-
         result = mlflow.register_model(
             model_uri=model_uri,
             name=MODEL_NAME
@@ -47,7 +46,7 @@ def train():
         logger.info(f"Model registered as version {result.version}")
 
         # ------------------------
-        # Promote To Production
+        # Promote to Production
         # ------------------------
         client = mlflow.tracking.MlflowClient()
 
@@ -58,7 +57,7 @@ def train():
             archive_existing_versions=True
         )
 
-        logger.info("Model promoted to Production stage.")
+        logger.info("Model promoted to Production.")
 
 
 if __name__ == "__main__":

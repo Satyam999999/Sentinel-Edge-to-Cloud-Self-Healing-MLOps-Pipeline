@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# MLflow
+mlflow.db
+mlruns/
+
+# DVC cache
+.dvc/cache/
+
+# Model weights
+*.pt
+
+# Images
+*.png
+*.jpg
+*.jpeg
+
+# OS
+.DS_Store

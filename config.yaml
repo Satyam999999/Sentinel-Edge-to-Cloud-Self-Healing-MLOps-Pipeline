@@ -1,0 +1,17 @@
+model:
+  weights_path: "yolov8n.pt"
+  confidence_threshold: 0.5
+
+system:
+  device: "cpu"      # change to "cuda" in Colab
+  log_level: "INFO"
+
+monitoring:
+  baseline_map: 0.75
+  drift_threshold: 0.05
+  latency_threshold_ms: 200
+
+active_learning:
+  low_confidence_threshold: 0.4
+  s3_bucket: "sentinel-low-confidence-satyam"
+

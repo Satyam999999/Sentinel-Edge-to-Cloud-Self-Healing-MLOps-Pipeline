@@ -1,0 +1,8 @@
+torch
+ultralytics
+opencv-python
+pyyaml
+mlflow
+boto3
+fastapi
+uvicorn

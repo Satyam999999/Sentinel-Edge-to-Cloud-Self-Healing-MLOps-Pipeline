@@ -2,10 +2,9 @@ name: Sentinel Retraining Pipeline
 
 on:
   push:
-    paths:
-      - 'data/**'
-      - 'data/*.dvc'
-      - 'train.py'
+    branches:
+      - main
+
 
 jobs:
   retrain:
